@@ -6,13 +6,11 @@ edition = "2021"
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
+ark-std = "0.3"
 ark-ff = "0.3"
 ark-ec = "0.3"
 ark-poly = "0.3"
 ark-bn254 = "0.3"
 
 [features]
-# default = [ ]
-default = [ "inspection" ]
-# with inspection features, all intermediate values of the min root hash are stored
-inspection = [ ]
+default = [ ]
