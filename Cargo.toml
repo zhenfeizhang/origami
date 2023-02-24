@@ -1,0 +1,18 @@
+[package]
+name = "fapam"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[dependencies]
+ark-ff = "0.4.1"
+ark-ec = "0.4.1"
+ark-poly = "0.4.1"
+ark-bn254 = "0.4.0"
+
+[features]
+# default = [ ]
+default = [ "inspection" ]
+# with inspection features, all intermediate values of the min root hash are stored
+inspection = [ ]
