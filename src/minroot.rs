@@ -29,7 +29,7 @@ impl<F: PrimeField> MinRootHasher<F> {
 
     fn iterate_once(&mut self, cur_x: &F, cur_y: &F, indexer: usize) -> (F, F) {
         let next_x = (*cur_x + *cur_y).pow(&[self.alpha]);
-        let next_y = *cur_x + F::from(indexer as u64);
+        let next_y = *cur_x ;//+ F::from(indexer as u64);
         #[cfg(feature = "inspection")]
         {
             self.vec_x.push(next_x);
