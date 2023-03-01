@@ -15,6 +15,7 @@ pub trait MinRootParam: PrimeField {
 pub struct MinRootHasher<F: MinRootParam> {
     pub(crate) vec_x: Vec<F>,
     pub(crate) vec_y: Vec<F>,
+    pub(crate) vec_indexer: Vec<F>,
     _phantom: PhantomData<F>,
 }
 
@@ -24,15 +25,18 @@ impl<F: MinRootParam> MinRootHasher<F> {
             _phantom: PhantomData,
             vec_x: vec![],
             vec_y: vec![],
+            vec_indexer: vec![],
         }
     }
 
     fn iterate_once(&mut self, cur_x: &F, cur_y: &F, indexer: usize) -> (F, F) {
+        let indexer = F::from(indexer as u64);
         let next_x = (*cur_x + *cur_y).pow(F::ALPHA_INV);
-        let next_y = *cur_x + F::from(indexer as u64);
+        let next_y = *cur_x + indexer;
 
         self.vec_x.push(next_x);
         self.vec_y.push(next_y);
+        self.vec_indexer.push(indexer);
 
         (next_x, next_y)
     }
@@ -51,8 +55,13 @@ impl<F: MinRootParam> MinRootHasher<F> {
     }
 
     pub fn display(&self) {
-        for (i, (x, y)) in self.vec_x.iter().zip(self.vec_y.iter()).enumerate() {
-            println!("{}-th iter: x {} y {}", i, x, y)
+        for (i, (indexer, (x, y))) in self
+            .vec_indexer
+            .iter()
+            .zip(self.vec_x.iter().zip(self.vec_y.iter()))
+            .enumerate()
+        {
+            println!("{}-th iter: indexer {}; x {}; y {}", i, indexer, x, y)
         }
     }
 }
