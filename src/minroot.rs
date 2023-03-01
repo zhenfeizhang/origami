@@ -51,6 +51,7 @@ impl<F: MinRootParam> MinRootHasher<F> {
         for indexer in 1..=iteration {
             (cur_x, cur_y) = self.iterate_once(&cur_x, &cur_y, indexer)
         }
+        self.vec_indexer.push(F::zero());
         (cur_x, cur_y)
     }
 
@@ -63,6 +64,22 @@ impl<F: MinRootParam> MinRootHasher<F> {
         {
             println!("{}-th iter: indexer {}; x {}; y {}", i, indexer, x, y)
         }
+    }
+
+    pub(crate) fn check(witnesses: &[F], errors: &[F]) -> bool {
+        let len = witnesses.len() - 2;
+        if errors.len() - 2 != len {
+            println!("lens do not match");
+            return false;
+        }
+        for i in 0..len {
+            if witnesses[i] + witnesses[i + 1] - witnesses[i + 2].pow(&[5]) + errors[i] != F::zero()
+            {
+                println!("equation not satisfied");
+                return false;
+            }
+        }
+        return true;
     }
 }
 
@@ -100,7 +117,10 @@ mod test {
 
         let mut hasher = MinRootHasher::<Fr>::new();
         let _res = hasher.hash(&x, &y, 10);
-
+        assert!(MinRootHasher::<Fr>::check(
+            &hasher.vec_x,
+            &hasher.vec_indexer
+        ));
         hasher.display()
     }
 }
